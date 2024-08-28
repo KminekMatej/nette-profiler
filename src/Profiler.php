@@ -136,7 +136,7 @@ class Profiler extends CompilerExtension
     public static function dumpTo(string $filename): void
     {
         $dumps = self::dump(true);
-        file_put_contents($filename, $dumps);
+        file_put_contents($filename, join("\n", $dumps));
     }
 
     /**
