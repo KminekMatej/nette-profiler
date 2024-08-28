@@ -4,6 +4,7 @@ namespace Nette\Profiler\Model;
 
 use ArrayAccess;
 use Countable;
+use Nette\Profiler\Profiler;
 use Override;
 
 use function count;
@@ -33,9 +34,9 @@ class PointGroup implements Countable, ArrayAccess
     /**
      * Get whole group duration
      *
-     * @return float
+     * @return int
      */
-    public function duration(): float
+    public function duration(): int
     {
         if (empty($this->points)) {
             return 0.0;
@@ -44,7 +45,7 @@ class PointGroup implements Countable, ArrayAccess
         $firstpoint = $this->points[0];
         $lastpoint = $this->points[array_key_last($this->points)];
 
-        return \Nette\Profiler\Profiler::startToEnd($firstpoint, $lastpoint);
+        return Profiler::startToEnd($firstpoint, $lastpoint);
     }
 
     #[Override]
