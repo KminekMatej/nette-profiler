@@ -164,7 +164,7 @@ class Profiler extends CompilerExtension
 
         foreach (self::$groups as $name => $group) {
             /* @var $group PointGroup */
-            $json[] = $group->jsonSerialize() + ["percent" => round(($group->duration() / self::duration()) * 100, 2)];
+            $json[] = $group->jsonSerialize($iterations) + ["percent" => round(($group->duration() / self::duration()) * 100, 2)];
         }
 
         return $json;
