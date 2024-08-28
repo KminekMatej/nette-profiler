@@ -141,20 +141,37 @@ class Profiler extends CompilerExtension
      * Dump to file
      *
      * @param string $filename
+     * @param bool $iterations
      * @return void
      */
-    public static function dumpTo(string $filename): void
+    public static function dumpTo(string $filename, bool $iterations = true): void
     {
         $dumps = self::dump(true);
         file_put_contents($filename, join("\n", $dumps));
     }
 
+    public static function asJson(): array
+    {
+        $json = [
+            "duration" => self::duration()
+        ];
+
+        foreach (self::$groups as $name => $group) {
+            /* @var $group PointGroup */
+            $json[] = $group->jsonSerialize() + ["percent" => round(($group->duration() / self::duration()) * 100, 2)];
+        }
+
+        return $json;
+    }
+
     /**
      * Dump output as an array of strings
-     *
+     * 
+     * @param bool $return Return as array instead of direct dump
+     * @param bool $iterations
      * @return string[]|null
      */
-    public static function dump(bool $return = false): array|null
+    public static function dump(bool $return = false, bool $iterations = true): array|null
     {
         $wholeDuration = self::duration();
         $output = [

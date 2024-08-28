@@ -30,8 +30,8 @@ class ProfilerTest extends TestCase
             Assert::type("string", $line);
         }
 
-        /*Profiler::dump(); //uncomment to test output
-        Assert::true(false);*/
+        echo json_encode(Profiler::asJson(), JSON_PRETTY_PRINT); //uncomment to test output
+        Assert::true(false);
     }
 
     private static function assertDuration(int $expected, int $actual, int $tolerance = 10)

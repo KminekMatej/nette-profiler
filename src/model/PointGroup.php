@@ -98,6 +98,7 @@ class PointGroup implements Countable, ArrayAccess, JsonSerializable
     public function jsonSerialize(): mixed
     {
         $times = [
+            "name" => $this->name,
             "complete" => $this->duration(),
             "iterations" => [],
         ];
