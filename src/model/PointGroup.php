@@ -95,22 +95,26 @@ class PointGroup implements Countable, ArrayAccess, JsonSerializable
     }
 
     #[\Override]
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(bool $iterations = true): mixed
     {
         $times = [
             "name" => $this->name,
-            "complete" => $this->duration(),
-            "iterations" => [],
+            "nextName" => $this->nextGroup?->name ?: "_end",
+            "duration" => $this->duration(),
+            "iterations" => $iterations ? [] : count($iterations) . " iterations (hidden)",
         ];
 
-        foreach ($this->points as $point) {
-            /* @var $point Point */
-            $times["iterations"][] = [
-                "start" => $point->start,
-                "end" => $point->end,
-                "duration" => $point->duration(),
-            ];
+        if ($iterations) {
+            foreach ($this->points as $point) {
+                /* @var $point Point */
+                $times["iterations"][] = [
+                    "start" => $point->start,
+                    "end" => $point->end,
+                    "duration" => $point->duration(),
+                ];
+            }
         }
+
 
         return $times;
     }

@@ -150,7 +150,13 @@ class Profiler extends CompilerExtension
         file_put_contents($filename, join("\n", $dumps));
     }
 
-    public static function asJson(): array
+    /**
+     * Get data as json
+     *
+     * @param bool $iterations False to avoid outputting iterations array
+     * @return array
+     */
+    public static function asJson(bool $iterations = true): array
     {
         $json = [
             "duration" => self::duration()
