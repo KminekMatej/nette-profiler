@@ -55,14 +55,13 @@ class PointGroup implements Countable, ArrayAccess, JsonSerializable
      */
     public function duration(): int
     {
-        if (empty($this->points)) {
-            return 0.0;
+        $sum = 0.0;
+
+        foreach ($this->points as $point) {
+            $sum += $point->duration();
         }
 
-        $firstpoint = $this->points[0];
-        $lastpoint = $this->points[array_key_last($this->points)];
-
-        return Profiler::startToEnd($firstpoint, $lastpoint);
+        return $sum;
     }
 
     #[Override]
@@ -105,7 +104,11 @@ class PointGroup implements Countable, ArrayAccess, JsonSerializable
 
         foreach ($this->points as $point) {
             /* @var $point Point */
-            $times["iterations"][] = $point->duration();
+            $times["iterations"][] = [
+                "start" => $point->start,
+                "end" => $point->end,
+                "duration" => $point->duration(),
+            ];
         }
 
         return $times;

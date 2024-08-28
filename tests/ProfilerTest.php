@@ -24,11 +24,12 @@ class ProfilerTest extends TestCase
         $groups = Profiler::getGroups();
         self::assertDuration(1000, $groups["start"]->duration());
         self::assertDuration(3000, $groups["check"]->duration());
-        self::assertDuration(4000, Profiler::duration());
+        self::assertDuration(7000, Profiler::duration());
         Assert::type("array", Profiler::dump(true));
         foreach (Profiler::dump(true) as $line) {
             Assert::type("string", $line);
         }
+
         /*Profiler::dump(); //uncomment to test output
         Assert::true(false);*/
     }
@@ -43,6 +44,9 @@ class ProfilerTest extends TestCase
     {
         Profiler::point("check");
         sleep(1);
+        Profiler::point("check 2");
+        sleep(1);
+        Profiler::point("check 3");
     }
 }
 
