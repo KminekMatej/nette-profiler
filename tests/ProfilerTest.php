@@ -15,17 +15,25 @@ class ProfilerTest extends TestCase
     {
         Environment::setup();                # inicializace Nette Tester
         Profiler::point("start");
-        sleep(3);
+        sleep(1);
 
         for ($index = 0; $index < 3; $index++) {
             $this->checkAndSleep();
         }
 
-        $points = Profiler::getPoints();
-        var_dump($points);
-        Assert::true(false);
+        $groups = Profiler::getGroups();
+        self::assertDuration(1000, $groups["start"]->duration());
+        self::assertDuration(3000, $groups["check"]->duration());
+        self::assertDuration(2000, $groups["check-end"]->duration());
+        self::assertDuration(4000, Profiler::duration());
     }
 
+    private static function assertDuration(int $expected, int $actual, int $tolerance = 10)
+    {
+        if($actual > ($expected + $tolerance) || $actual < ($expected - $tolerance)){
+            Assert::fail("$actual ms not in expected interval $expected ms (+- $tolerance) ", $actual, $expected);
+        }
+    }
     private function checkAndSleep()
     {
         Profiler::point("check");
