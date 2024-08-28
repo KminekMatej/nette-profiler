@@ -30,8 +30,10 @@ class ProfilerTest extends TestCase
 
     private static function assertDuration(int $expected, int $actual, int $tolerance = 10)
     {
-        if($actual > ($expected + $tolerance) || $actual < ($expected - $tolerance)){
+        if ($actual > ($expected + $tolerance) || $actual < ($expected - $tolerance)) {
             Assert::fail("$actual ms not in expected interval $expected ms (+- $tolerance) ", $actual, $expected);
+        } else {
+            Assert::true(true);
         }
     }
     private function checkAndSleep()
