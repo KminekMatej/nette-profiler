@@ -12,6 +12,7 @@ class Profiler extends CompilerExtension
 {
     /** @var array{string, PointGroup} */
     private static array $groups = [];
+    private static int $duration;
     private static Point $runningPoint;
     private static PointGroup $runningPointGroup;
 
@@ -112,8 +113,17 @@ class Profiler extends CompilerExtension
         return $endPoint->start - $startPoint->end;
     }
 
+    /**
+     * Get complete duration
+     *
+     * @return int
+     */
     public static function duration(): int
     {
+        if (isset(self::$duration)) {
+            return self::$duration;
+        }
+
         /* @var $firstGroup PointGroup */
         $firstGroup = self::$groups[array_key_first(self::$groups)];
         /* @var $lastGroup PointGroup */
@@ -146,10 +156,11 @@ class Profiler extends CompilerExtension
      */
     public static function dump(bool $return = false): array|null
     {
+        $wholeDuration = self::duration();
         $output = [
             "Nette\Profiler output",
             "---------------------",
-            "Time of whole measurement: " . self::duration() . " ms",
+            "Time of whole measurement: " . $wholeDuration . " ms",
             "Points:",
         ];
 
@@ -160,12 +171,12 @@ class Profiler extends CompilerExtension
             $nextGroupName = $group->getNextGroup()?->name ?: "_end";
 
             $prefix = "[$index/$total] {$group->name} --> $nextGroupName";
-            $txt = "$prefix\t..." . str_pad((string) $group->duration(), 10, " ", STR_PAD_LEFT) . " ms";
+            $txt = "$prefix\t..." . str_pad((string) $group->duration(), 10, " ", STR_PAD_LEFT) . " ms [".self::toPercent($group->duration())."]";
             $output[] = $txt;
 
             if ($group->count() > 1) { // multiple iterations
                 foreach ($group->points as $iteration => $point) {
-                    $output[] = "\t(Iteration " . ($iteration + 1) . ")\t..." . str_pad((string) $point->duration(), 10, " ", STR_PAD_LEFT) . " ms";
+                    $output[] = "\t(Iteration " . ($iteration + 1) . ")\t..." . str_pad((string) $point->duration(), 10, " ", STR_PAD_LEFT) . " ms [".self::toPercent($point->duration())."]";
                 }
             }
             $index++;
@@ -179,5 +190,10 @@ class Profiler extends CompilerExtension
             }
             return null;
         }
+    }
+
+    private static function toPercent(int $duration, int $precision = 2): string
+    {
+        return round(($duration / self::duration()) * 100, $precision) . " %";
     }
 }

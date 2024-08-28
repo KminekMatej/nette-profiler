@@ -29,6 +29,8 @@ class ProfilerTest extends TestCase
         foreach (Profiler::dump(true) as $line) {
             Assert::type("string", $line);
         }
+        /*Profiler::dump(); //uncomment to test output
+        Assert::true(false);*/
     }
 
     private static function assertDuration(int $expected, int $actual, int $tolerance = 10)
