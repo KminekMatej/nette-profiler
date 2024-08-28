@@ -10,16 +10,26 @@ use Override;
 
 use function count;
 
-
 class PointGroup implements Countable, ArrayAccess, JsonSerializable
 {
-    private array $points = [];
-    
+    /** @var Point[] */
+    public array $points = [];
+    private ?PointGroup $nextGroup = null;
+
+    public function __construct(public readonly string $name)
+    {
+    }
+
     public function addPoint(): Point
     {
         $point = new Point();
         $this->points[] = $point;
         return $point;
+    }
+
+    public function getNextGroup(): ?PointGroup
+    {
+        return $this->nextGroup;
     }
 
     public function getFirstPoint(): ?Point
@@ -30,6 +40,12 @@ class PointGroup implements Countable, ArrayAccess, JsonSerializable
     public function getLastPoint(): ?Point
     {
         return $this->points[array_key_last($this->points)] ?? null;
+    }
+
+    public function setNextGroup(PointGroup $nextGroup): static
+    {
+        $this->nextGroup = $nextGroup;
+        return $this;
     }
 
     /**
@@ -91,7 +107,7 @@ class PointGroup implements Countable, ArrayAccess, JsonSerializable
             /* @var $point Point */
             $times["iterations"][] = $point->duration();
         }
-        
+
         return $times;
     }
 }
