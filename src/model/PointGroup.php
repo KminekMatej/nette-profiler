@@ -4,13 +4,14 @@ namespace Nette\Profiler\Model;
 
 use ArrayAccess;
 use Countable;
+use JsonSerializable;
 use Nette\Profiler\Profiler;
 use Override;
 
 use function count;
 
 
-class PointGroup implements Countable, ArrayAccess
+class PointGroup implements Countable, ArrayAccess, JsonSerializable
 {
     private array $points = [];
     
@@ -76,5 +77,21 @@ class PointGroup implements Countable, ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         unset($this->points[$offset]);
+    }
+
+    #[\Override]
+    public function jsonSerialize(): mixed
+    {
+        $times = [
+            "complete" => $this->duration(),
+            "iterations" => [],
+        ];
+
+        foreach ($this->points as $point) {
+            /* @var $point Point */
+            $times["iterations"][] = $point->duration();
+        }
+        
+        return $times;
     }
 }
