@@ -101,7 +101,7 @@ class PointGroup implements Countable, ArrayAccess, JsonSerializable
             "name" => $this->name,
             "nextName" => $this->nextGroup?->name ?: "_end",
             "duration" => $this->duration(),
-            "iterations" => $iterations ? [] : count($iterations) . " iterations (hidden)",
+            "iterations" => $iterations ? [] : count($this->points) . " iterations (hidden)",
         ];
 
         if ($iterations) {
