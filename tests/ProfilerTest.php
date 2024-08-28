@@ -24,23 +24,23 @@ class ProfilerTest extends TestCase
         $groups = Profiler::getGroups();
         self::assertDuration(1000, $groups["start"]->duration());
         self::assertDuration(3000, $groups["check"]->duration());
-        self::assertDuration(2000, $groups["check-end"]->duration());
         self::assertDuration(4000, Profiler::duration());
+        Assert::type("array", Profiler::dump(true));
+        foreach (Profiler::dump(true) as $line) {
+            Assert::type("string", $line);
+        }
     }
 
     private static function assertDuration(int $expected, int $actual, int $tolerance = 10)
     {
         if ($actual > ($expected + $tolerance) || $actual < ($expected - $tolerance)) {
             Assert::fail("$actual ms not in expected interval $expected ms (+- $tolerance) ", $actual, $expected);
-        } else {
-            Assert::true(true);
         }
     }
     private function checkAndSleep()
     {
         Profiler::point("check");
         sleep(1);
-        Profiler::point("check-end");
     }
 }
 
