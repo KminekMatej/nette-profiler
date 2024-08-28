@@ -128,6 +128,18 @@ class Profiler extends CompilerExtension
     }
 
     /**
+     * Dump to file
+     *
+     * @param string $filename
+     * @return void
+     */
+    public static function dumpTo(string $filename): void
+    {
+        $dumps = self::dump(true);
+        file_put_contents($filename, $dumps);
+    }
+
+    /**
      * Dump output as an array of strings
      *
      * @return string[]|null
